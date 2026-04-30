@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('folks', '0005_remove_employeehourlybreak_break_end_time_and_more'),
+        ("folks", "0005_remove_employeehourlybreak_break_end_time_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='employee',
-            name='alternate_email',
+            model_name="employee",
+            name="alternate_email",
         ),
         migrations.RemoveField(
-            model_name='employee',
-            name='primary_email',
+            model_name="employee",
+            name="primary_email",
         ),
     ]

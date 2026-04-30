@@ -7,23 +7,59 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('folks', '0006_remove_employee_alternate_email_and_more'),
+        ("folks", "0006_remove_employee_alternate_email_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LeaveDetail',
+            name="LeaveDetail",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('leave_type', models.CharField(choices=[('Sick', 'Sick Leave'), ('Vacation', 'Vacation Leave'), ('Personal', 'Personal Leave'), ('Emergency', 'Emergency Leave'), ('Unpaid', 'Unpaid Leave')], max_length=50)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('status', models.CharField(choices=[('Submitted', 'Submitted'), ('Pending Approval', 'Pending Approval'), ('Approved', 'Approved'), ('Denied', 'Denied')], max_length=50)),
-                ('message', models.TextField(blank=True, null=True)),
-                ('employee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='folks.employee')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "leave_type",
+                    models.CharField(
+                        choices=[
+                            ("Sick", "Sick Leave"),
+                            ("Vacation", "Vacation Leave"),
+                            ("Personal", "Personal Leave"),
+                            ("Emergency", "Emergency Leave"),
+                            ("Unpaid", "Unpaid Leave"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("Submitted", "Submitted"),
+                            ("Pending Approval", "Pending Approval"),
+                            ("Approved", "Approved"),
+                            ("Denied", "Denied"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("message", models.TextField(blank=True, null=True)),
+                (
+                    "employee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="folks.employee"
+                    ),
+                ),
             ],
             options={
-                'db_table': 'leave_details',
+                "db_table": "leave_details",
             },
         ),
     ]

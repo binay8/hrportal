@@ -7,55 +7,101 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('folks', '0002_remove_roledetail_pay_type'),
+        ("folks", "0002_remove_roledetail_pay_type"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='roledetail',
-            name='reason_for_end',
+            model_name="roledetail",
+            name="reason_for_end",
         ),
         migrations.CreateModel(
-            name='EmployeePayCheck',
+            name="EmployeePayCheck",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('pay_period_start', models.DateField()),
-                ('pay_period_end', models.DateField()),
-                ('net_pay', models.DecimalField(decimal_places=2, max_digits=15)),
-                ('deductions', models.DecimalField(decimal_places=2, max_digits=15)),
-                ('employee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='folks.employee')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("pay_period_start", models.DateField()),
+                ("pay_period_end", models.DateField()),
+                ("net_pay", models.DecimalField(decimal_places=2, max_digits=15)),
+                ("deductions", models.DecimalField(decimal_places=2, max_digits=15)),
+                (
+                    "employee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="folks.employee"
+                    ),
+                ),
             ],
             options={
-                'db_table': 'employee_paychecks',
+                "db_table": "employee_paychecks",
             },
         ),
         migrations.CreateModel(
-            name='EmployeeHourlyShift',
+            name="EmployeeHourlyShift",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('shift_start_date', models.DateField()),
-                ('shift_end_date', models.DateField()),
-                ('start_time', models.TimeField()),
-                ('end_time', models.TimeField()),
-                ('hours_worked', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('employee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='folks.employee')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("shift_start_date", models.DateField()),
+                ("shift_end_date", models.DateField()),
+                ("start_time", models.TimeField()),
+                ("end_time", models.TimeField()),
+                ("hours_worked", models.DecimalField(decimal_places=2, max_digits=5)),
+                (
+                    "employee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="folks.employee"
+                    ),
+                ),
             ],
             options={
-                'db_table': 'employee_hourly_shifts',
+                "db_table": "employee_hourly_shifts",
             },
         ),
         migrations.CreateModel(
-            name='EmployeeHourlyBreak',
+            name="EmployeeHourlyBreak",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('break_start_time', models.TimeField()),
-                ('break_end_time', models.TimeField()),
-                ('paid_break', models.BooleanField(default=False)),
-                ('employee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='folks.employee')),
-                ('shift_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='breaks', to='folks.employeehourlyshift')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("break_start_time", models.TimeField()),
+                ("break_end_time", models.TimeField()),
+                ("paid_break", models.BooleanField(default=False)),
+                (
+                    "employee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="folks.employee"
+                    ),
+                ),
+                (
+                    "shift_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="breaks",
+                        to="folks.employeehourlyshift",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'employee_hourly_breaks',
+                "db_table": "employee_hourly_breaks",
             },
         ),
     ]

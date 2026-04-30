@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +17,10 @@
         }
     </style>
 </head>
+
 <body>
-    <header style="display: flex; align-items: center; justify-content: space-between; background-color: #e6dfdf; padding: 10px 20px;">
+    <header
+        style="display: flex; align-items: center; justify-content: space-between; background-color: #e6dfdf; padding: 10px 20px;">
         <div style="display: flex; align-items: center;">
             <a href="{% url 'home' %}">
                 <img src="{% static 'folks/company_logo.png' %}" alt="Company Logo" style="height: 40px;">
@@ -26,9 +29,9 @@
         <nav id="context-menu">
             <!-- Context-based menu items go here -->
             {% if user.is_authenticated %}
-                <span>Welcome, {{ user.username }}!</span>
-                <a href="{% url 'home' %}" style="margin-left: 15px;">Home</a>
-                <a href="/logout/" style="margin-left: 15px;">Logout</a>
+            <span>Welcome, {{ user.username }}!</span>
+            <a href="{% url 'home' %}" style="margin-left: 15px;">Home</a>
+            <a href="/logout/" style="margin-left: 15px;">Logout</a>
             {% endif %}
         </nav>
     </header>
@@ -46,4 +49,5 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

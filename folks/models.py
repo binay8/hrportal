@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 class Person(models.Model):
     """
@@ -12,14 +13,17 @@ class Person(models.Model):
     Meta:
         abstract (bool): Indicates that this is an abstract base class and should not be used to create any database table.
     """
+
     GENDER_CHOICES = [
-        ('Male', 'Male'),
-        ('Female', 'Female'),
+        ("Male", "Male"),
+        ("Female", "Female"),
     ]
     firstname = models.CharField(max_length=30, blank=False, null=False)
     middle_initial = models.CharField(max_length=3, blank=True, null=True)
     lastname = models.CharField(max_length=30, blank=False, null=False)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    gender = models.CharField(
+        max_length=10, choices=GENDER_CHOICES, blank=True, null=True
+    )
     ethnicity = models.CharField(max_length=50, blank=True, null=True)
     race = models.CharField(max_length=50, blank=True, null=True)
     nationality = models.CharField(max_length=50, blank=True, null=True)
@@ -34,14 +38,14 @@ class Person(models.Model):
     country = models.CharField(max_length=50, blank=True, null=True)
     government_id = models.CharField(max_length=50, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    social_security_number = models.CharField(max_length=20, blank=True, null=True)   
+    social_security_number = models.CharField(max_length=20, blank=True, null=True)
     personal_email = models.EmailField(blank=True, null=True)
     emergency_contact_name = models.CharField(max_length=50, blank=True, null=True)
-    emergency_contact_phone = models.CharField(max_length=20, blank=True, null=True)   
-    
+    emergency_contact_phone = models.CharField(max_length=20, blank=True, null=True)
+
     def __str__(self):
-        return self.fullname    
-    
+        return self.fullname
+
     @property
     def fullname(self):
         """
@@ -50,7 +54,7 @@ class Person(models.Model):
         if self.middle_initial:
             return f"{self.firstname} {self.middle_initial} {self.lastname}"
         return f"{self.firstname} {self.lastname}"
-    
+
     class Meta:
         """
         Meta class for defining model options.
@@ -58,10 +62,11 @@ class Person(models.Model):
         Attributes:
             abstract (bool): Indicates that this model is an abstract base class.
         """
+
         abstract = True
 
 
-class Employee(Person): 
+class Employee(Person):
     """
     Represents an employee in the HR portal.
         primary_email (EmailField): The primary email address of the employee.
@@ -82,9 +87,12 @@ class Employee(Person):
         current_role (str): The current role of the employee from the related RoleDetails table.
         full_address (str): The full address of the employee.
         years_of_service (int): The number of years the employee has been in service based on the hire date.
-    
-"""
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='employee_user_profile')
+
+    """
+
+    user = models.OneToOneField(
+        User, null=True, on_delete=models.CASCADE, related_name="employee_user_profile"
+    )
     alias1 = models.CharField(max_length=50, blank=True, null=True, unique=True)
     alias2 = models.CharField(max_length=50, blank=True, null=True, unique=True)
     # primary_email = models.EmailField()
@@ -92,30 +100,40 @@ class Employee(Person):
     hire_date = models.DateField()
     employment_end_date = models.DateField(blank=True, null=True)
     EMPLOYMENT_STATUS_CHOICES = [
-        ('Active', 'Active'),
-        ('Inactive', 'Inactive'), 
-        ('Leave of Absence', 'Leave of Absence'), 
-        ('Terminated', 'Terminated')
+        ("Active", "Active"),
+        ("Inactive", "Inactive"),
+        ("Leave of Absence", "Leave of Absence"),
+        ("Terminated", "Terminated"),
     ]
-    employment_status = models.CharField(max_length=50, choices=EMPLOYMENT_STATUS_CHOICES, blank=True, null=True)
+    employment_status = models.CharField(
+        max_length=50, choices=EMPLOYMENT_STATUS_CHOICES, blank=True, null=True
+    )
     EMPLOYEE_TYPE_CHOICES = [
-        ('Full-time', 'Full-time'), 
-        ('Part-time', 'Part-time'), 
-        ('Contractor', 'Contractor'), 
-        ('Intern', 'Intern'),
-        ('Seasonal', 'Seasonal'),
-        ('Temporary', 'Temporary')  # Fixed typo: was 'Temporaty'
-        ]
-    employee_type = models.CharField(max_length=50,choices= EMPLOYEE_TYPE_CHOICES , blank=True, null=True)
+        ("Full-time", "Full-time"),
+        ("Part-time", "Part-time"),
+        ("Contractor", "Contractor"),
+        ("Intern", "Intern"),
+        ("Seasonal", "Seasonal"),
+        ("Temporary", "Temporary"),  # Fixed typo: was 'Temporaty'
+    ]
+    employee_type = models.CharField(
+        max_length=50, choices=EMPLOYEE_TYPE_CHOICES, blank=True, null=True
+    )
     last_promotion_date = models.DateField(blank=True, null=True)
-    manager_id = models.ForeignKey( 'self', on_delete=models.SET_NULL, blank=True, null=True, related_name='direct_reports')
+    manager_id = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="direct_reports",
+    )
     # manager_id = models.IntegerField(blank=True, null=True)
     work_location_building = models.CharField(max_length=50, blank=True, null=True)
     work_location_office = models.CharField(max_length=50, blank=True, null=True)
     new_hire = models.BooleanField(default=False)
     rehire = models.BooleanField(default=False)
-    previous_employee_id = models.IntegerField(blank=True, null=True) 
-    
+    previous_employee_id = models.IntegerField(blank=True, null=True)
+
     # This function generates an unique alias for employee based on their first name and last name initials.
     # The convention is to use the first name and the first letter of the last name.
     # If the alias already exists in the database, it appends additional letters from last name until a unique alias is found.
@@ -126,7 +144,9 @@ class Employee(Person):
         # Check if the preferred alias already exists in the database
         preferred_alias = f"{first_name}{last_name[0]}"
         # Query only the relevant alias values for efficiency
-        existing_aliases = Employee.objects.exclude(pk=self.pk).values_list('alias1', flat=True)
+        existing_aliases = Employee.objects.exclude(pk=self.pk).values_list(
+            "alias1", flat=True
+        )
         alias = preferred_alias
         increment = 1
         last_name_length = len(last_name)
@@ -163,33 +183,36 @@ class Employee(Person):
         """
         Returns the current role of the employee from the related RoleDetails table.
         """
-        role = RoleDetail.objects.filter(employee=self).order_by('-start_date').first()
+        role = RoleDetail.objects.filter(employee=self).order_by("-start_date").first()
         return role.job_title if role else None
-    
+
     @property
     def user_roles(self):
         """
         Returns a list of roles assigned to the employee.
         """
         return UserRole.objects.filter(user=self)
-    
+
     @property
     def full_address(self):
         """
         Returns the full address of the employee by combining street address, city, state, zip code, and country.
         """
         return f"{self.street_address}, {self.city}, {self.state} {self.zipcode}, {self.country}"
-    
+
     @property
     def years_of_service(self):
         """
         Returns the number of years the employee has been in service based on the hire date.
-        
+
         """
         from datetime import date
+
         today = date.today()
         hire_year = self.hire_date.year
-        end_year = self.employment_end_date.year if self.employment_end_date else today.year
+        end_year = (
+            self.employment_end_date.year if self.employment_end_date else today.year
+        )
         return end_year - hire_year
 
         ### If you get an error "Instance of 'DateField' has no 'year' member", go to File > Preferences > Settings > Extensions > Python and add "python.linting.pylintArgs": ["--generate-members"] to the settings.json file.
@@ -201,7 +224,8 @@ class Employee(Person):
         Attributes:
             db_table (str): The name of the database table to use for this model.
         """
-        db_table = 'employees'
+
+        db_table = "employees"
 
 
 class RoleDetail(models.Model):
@@ -222,11 +246,13 @@ class RoleDetail(models.Model):
         hourly_full_time (BooleanField): Indicates if the employee is a full-time hourly employee.
         hourly_start_day (DateField): The start day for hourly employees. This field is optional.
     """
-    
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    department = models.ForeignKey('Department', on_delete=models.SET_NULL, blank=True, null=True)
+    department = models.ForeignKey(
+        "Department", on_delete=models.SET_NULL, blank=True, null=True
+    )
     job_title = models.CharField(max_length=50)
-    job_title_short = models.CharField(max_length = 6, blank=True, null=True)
+    job_title_short = models.CharField(max_length=6, blank=True, null=True)
     previous_job_title = models.CharField(max_length=50, blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
@@ -243,54 +269,72 @@ class RoleDetail(models.Model):
         Attributes:
             db_table (str): The name of the database table to use for this model.
         """
-        db_table = 'role_details'
-        
+
+        db_table = "role_details"
+
+
 class SalaryDetail(models.Model):
-    """ Represents the salary details of an employee.   """
+    """Represents the salary details of an employee."""
 
     PAY_FREQUENCY_CHOICES = [
-        ('Weekly', 'Weekly'),
-        ('Bi-Weekly', 'Bi-Weekly'),
-        ('Monthly', 'Monthly'),
-        ('Quarterly', 'Quarterly'),
-        ('Annually', 'Annually'),
+        ("Weekly", "Weekly"),
+        ("Bi-Weekly", "Bi-Weekly"),
+        ("Monthly", "Monthly"),
+        ("Quarterly", "Quarterly"),
+        ("Annually", "Annually"),
     ]
     PAY_TYPE_CHOICES = [
-        ('Salaried', 'Salaried'),
-        ('Hourly', 'Hourly'),
-        ('Contract', 'Contract'),
+        ("Salaried", "Salaried"),
+        ("Hourly", "Hourly"),
+        ("Contract", "Contract"),
     ]
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    pay_type = models.CharField(max_length=20, choices=PAY_TYPE_CHOICES, blank=False, null=True)
+    pay_type = models.CharField(
+        max_length=20, choices=PAY_TYPE_CHOICES, blank=False, null=True
+    )
     # is_salaried = models.BooleanField(default=False)
     # is_hourly = models.BooleanField(default=False)
     is_bonus_eligible = models.BooleanField(default=False)
-    pay_frequency = models.CharField(max_length=20, choices=PAY_FREQUENCY_CHOICES, blank=False, null=False, default='Bi-Weekly')
-    annual_salary = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True)
-    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    overtime_rate = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    pay_frequency = models.CharField(
+        max_length=20,
+        choices=PAY_FREQUENCY_CHOICES,
+        blank=False,
+        null=False,
+        default="Bi-Weekly",
+    )
+    annual_salary = models.DecimalField(
+        max_digits=15, decimal_places=2, blank=True, null=True
+    )
+    hourly_rate = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
+    overtime_rate = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     bonus_category = models.CharField(max_length=50, blank=True, null=True)
-    bonus_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    bonus_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     effective_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
     hourly_full_time = models.BooleanField(default=False)
     hourly_start_day = models.DateField(blank=True, null=True)
-    
+
     def clean(self):
         super().clean()
         # Validate that either annual_salary or hourly_rate is provided based on pay_type'
-        if self.pay_type == 'Salaried' and not self.annual_salary:
+        if self.pay_type == "Salaried" and not self.annual_salary:
             raise ValueError("ERROR: Annual salary is required for salaried employees.")
-        if self.pay_type == 'Hourly' and not self.hourly_rate:
+        if self.pay_type == "Hourly" and not self.hourly_rate:
             raise ValueError("ERROR: Hourly rate is required for hourly employees.")
 
     def __str__(self):
-        return self.employee.fullname   
- 
-    
+        return self.employee.fullname
+
     class Meta:
-        db_table = 'salarydetails'
+        db_table = "salarydetails"
+
 
 class Department(models.Model):
     """
@@ -300,13 +344,20 @@ class Department(models.Model):
         description (TextField): A brief description of the department. This field is optional.
         manager (ForeignKey): A foreign key to the Employee model representing the manager of the department. This field is optional.
     """
+
     name = models.CharField(max_length=50)
     short_name = models.CharField(max_length=6, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    head = models.ForeignKey(Employee, on_delete=models.SET_NULL, blank=True, null=True, related_name='managed_departments')
+    head = models.ForeignKey(
+        Employee,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="managed_departments",
+    )
 
     def __str__(self):
-        return self.name                                   
+        return self.name
 
     @property
     def head_full_name(self):
@@ -314,14 +365,16 @@ class Department(models.Model):
         Returns the full name of the department head.
         """
         return self.head.fullname if self.head else None
-    
+
     class Meta:
         """
         Meta class for defining model options.
         Attributes:
             db_table (str): The name of the database table to use for this model.
         """
-        db_table = 'departments'
+
+        db_table = "departments"
+
 
 class EmployeeHourlyShift(models.Model):
     """
@@ -333,23 +386,24 @@ class EmployeeHourlyShift(models.Model):
         end_time (TimeField): The end time of the shift.
         hours_worked (DecimalField): The total hours worked during the shift.
     """
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift_start_date_time = models.DateTimeField()
     shift_end_date_time = models.DateTimeField()
-
 
     @property
     def total_hours(self):
         """
         Returns the total hours worked during the shift.
         """
-        return self.shift_end_date_time - self.shift_start_date_time 
+        return self.shift_end_date_time - self.shift_start_date_time
 
     def __str__(self):
         return f"{self.employee.fullname} - {self.shift_start_date_time} to {self.shift_end_date_time}"
 
     class Meta:
-        db_table = 'employee_hourly_shifts'
+        db_table = "employee_hourly_shifts"
+
 
 class EmployeeHourlyBreak(models.Model):
     """
@@ -360,24 +414,30 @@ class EmployeeHourlyBreak(models.Model):
         break_end_time (TimeField): The end time of the break.
         break_duration (DecimalField): The duration of the break in hours.
     """
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    shift_id = models.ForeignKey(EmployeeHourlyShift, on_delete=models.CASCADE, related_name='breaks')
+    shift_id = models.ForeignKey(
+        EmployeeHourlyShift, on_delete=models.CASCADE, related_name="breaks"
+    )
     break_start_date_time = models.DateTimeField()
     break_end_date_time = models.DateTimeField()
     paid_break = models.BooleanField(default=False)
-    
+
     @property
     def break_duration(self):
         """
         Returns the duration of the break in hours.
         """
-        return (self.break_end_date_time - self.break_start_date_time).total_seconds() / 3600
+        return (
+            self.break_end_date_time - self.break_start_date_time
+        ).total_seconds() / 3600
 
     def __str__(self):
         return f"{self.employee.fullname} - Break from {self.break_start_date_time} to {self.break_end_date_time}"
 
     class Meta:
-        db_table = 'employee_hourly_breaks'
+        db_table = "employee_hourly_breaks"
+
 
 class EmployeePayCheck(models.Model):
     """
@@ -390,6 +450,7 @@ class EmployeePayCheck(models.Model):
         net_pay (DecimalField): The total net pay after deductions for the pay period.
         deductions (DecimalField): The total deductions for the pay period.
     """
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     pay_period_start = models.DateField()
     pay_period_end = models.DateField()
@@ -405,30 +466,38 @@ class EmployeePayCheck(models.Model):
         """
         Returns the gross pay for the paycheck.
         """
-        #calculate gross pay based on salary details
+        # calculate gross pay based on salary details
         salary_details = SalaryDetail.objects.filter(employee=self.employee).first()
         if salary_details:
-            if salary_details.pay_type == 'Salaried' and salary_details.pay_frequency == 'Bi-Weekly':
+            if (
+                salary_details.pay_type == "Salaried"
+                and salary_details.pay_frequency == "Bi-Weekly"
+            ):
                 return round(salary_details.annual_salary / 26, 2)
-            elif salary_details.pay_type == 'Salaried' and salary_details.pay_frequency == 'Monthly':
+            elif (
+                salary_details.pay_type == "Salaried"
+                and salary_details.pay_frequency == "Monthly"
+            ):
                 return round(salary_details.annual_salary / 12, 2)
-    
-    
+
     @property
     def gross_pay_hourly(self):
         """
         Returns the gross pay for the paycheck.
         """
-        #calculate gross pay based on hourly details
+        # calculate gross pay based on hourly details
         # Get the salary details for the employee. Need this to get hourly rate.
         salary_details = SalaryDetail.objects.filter(employee=self.employee).first()
         # Calculate the total hours worked in the pay period. Create a query to extract number of hours worked in the pay period from EmployeeHourlyShift
-        hourly_shifts = EmployeeHourlyShift.objects.filter(employee=self.employee, shift_date__range=[self.pay_period_start, self.pay_period_end])
+        hourly_shifts = EmployeeHourlyShift.objects.filter(
+            employee=self.employee,
+            shift_date__range=[self.pay_period_start, self.pay_period_end],
+        )
         total_hours = sum(shift.total_hours for shift in hourly_shifts)
         return total_hours * self.hourly_rate
 
     class Meta:
-        db_table = 'employee_paychecks'
+        db_table = "employee_paychecks"
 
 
 class UserRole(models.Model):
@@ -438,6 +507,7 @@ class UserRole(models.Model):
         user (ForeignKey): A foreign key to the User model.
         role (CharField): The role assigned to the user, with a maximum length of 50 characters.
     """
+
     user = models.ForeignKey(Employee, on_delete=models.CASCADE)
     role = models.CharField(max_length=50)
 
@@ -447,7 +517,8 @@ class UserRole(models.Model):
         Attributes:
             db_table (str): The name of the database table to use for this model.
         """
-        db_table = 'user_roles'
+
+        db_table = "user_roles"
 
 
 class LeaveDetail(models.Model):
@@ -460,19 +531,20 @@ class LeaveDetail(models.Model):
         end_date (DateField): The end date of the leave.
         status (CharField): The status of the leave request (e.g., Approved, Pending).
     """
+
     LEAVE_TYPE_CHOICES = [
-        ('Sick', 'Sick Leave'),
-        ('Vacation', 'Vacation Leave'),
-        ('Personal', 'Personal Leave'),
-        ('Emergency', 'Emergency Leave'),
-        ('Unpaid', 'Unpaid Leave')
+        ("Sick", "Sick Leave"),
+        ("Vacation", "Vacation Leave"),
+        ("Personal", "Personal Leave"),
+        ("Emergency", "Emergency Leave"),
+        ("Unpaid", "Unpaid Leave"),
     ]
     STATUS_CHOICES = [
-            ('Submitted', 'Submitted'),
-            ('Pending Approval', 'Pending Approval'),
-            ('Approved', 'Approved'),
-            ('Denied', 'Denied')
-        ]
+        ("Submitted", "Submitted"),
+        ("Pending Approval", "Pending Approval"),
+        ("Approved", "Approved"),
+        ("Denied", "Denied"),
+    ]
 
     active = models.BooleanField(default=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
@@ -481,10 +553,12 @@ class LeaveDetail(models.Model):
     end_date = models.DateField(blank=False, null=False)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
     message = models.TextField(blank=True, null=True)
+
     class Meta:
         """
         Meta class for defining model options.
         Attributes:
             db_table (str): The name of the database table to use for this model.
         """
-        db_table = 'leave_details'
+
+        db_table = "leave_details"

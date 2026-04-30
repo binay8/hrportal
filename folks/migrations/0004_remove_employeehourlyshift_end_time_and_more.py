@@ -7,39 +7,39 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('folks', '0003_remove_roledetail_reason_for_end_employeepaycheck_and_more'),
+        ("folks", "0003_remove_roledetail_reason_for_end_employeepaycheck_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='employeehourlyshift',
-            name='end_time',
+            model_name="employeehourlyshift",
+            name="end_time",
         ),
         migrations.RemoveField(
-            model_name='employeehourlyshift',
-            name='hours_worked',
+            model_name="employeehourlyshift",
+            name="hours_worked",
         ),
         migrations.RemoveField(
-            model_name='employeehourlyshift',
-            name='shift_end_date',
+            model_name="employeehourlyshift",
+            name="shift_end_date",
         ),
         migrations.RemoveField(
-            model_name='employeehourlyshift',
-            name='shift_start_date',
+            model_name="employeehourlyshift",
+            name="shift_start_date",
         ),
         migrations.RemoveField(
-            model_name='employeehourlyshift',
-            name='start_time',
+            model_name="employeehourlyshift",
+            name="start_time",
         ),
         migrations.AddField(
-            model_name='employeehourlyshift',
-            name='shift_end_date_time',
+            model_name="employeehourlyshift",
+            name="shift_end_date_time",
             field=models.DateTimeField(default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='employeehourlyshift',
-            name='shift_start_date_time',
+            model_name="employeehourlyshift",
+            name="shift_start_date_time",
             field=models.DateTimeField(default=django.utils.timezone.now),
             preserve_default=False,
         ),
