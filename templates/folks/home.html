@@ -1,0 +1,68 @@
+{% extends "folks/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Welcome, {{ employee.firstname }}!</h2>
+    <div class="row">
+        <!-- Pay Details Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    Pay Details
+                </div>
+                <div class="card-body">
+                    <p><strong>Latest Pay Date:</strong> {{ last_pay.pay_period_end }} </p>
+                    <p><strong>Gross Pay:</strong> ${{ last_pay.gross_pay_salaried }} </p>
+                    <a href="" class="btn btn-outline-warning btn-sm">View Paystubs</a>
+                    <!-- {'submit_leave' %} -->
+                </div>
+            </div>
+        </div>
+        <!-- Account Information Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    Account Information
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ employee.primary_email }} </p> <!-- {{ employee.email }} -->
+                    <p><strong>Phone:</strong> {{employee.phone_number}} </p> <!-- {{ user.profile.phone }} -->
+                    <p><strong>Employee ID:</strong> {{employee.id}} </p> <!-- {{ user.profile.employee_id }} -->
+
+                </div>
+            </div>
+        </div>
+        <!-- Leave Requests Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    Leave Requests
+                </div>
+                <div class="card-body">
+                    <p><strong>Pending Requests:</strong> </p> <!-- {{ leave_requests.pending_count }} -->
+                    <a href="{% url 'request_leave' %}" class="btn btn-outline-warning btn-sm">Submit Leave</a>
+                    <!-- {'submit_leave' %} -->
+                    <a href="{% url 'view_leave' %}" class="btn btn-outline-warning btn-sm">View Requests</a> <!-- { 'view_requests' %} -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Other HR Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card mt-3">
+                <div class="card-header bg-info text-white">
+                    HR Actions
+                </div>
+                <div class="card-body">
+                    <a href="" class="btn btn-info btn-sm mr-2">Benefits</a> <!-- {'benefits' %} -->
+                    <a href="" class="btn btn-info btn-sm mr-2">Documents</a> <!-- {'documents' %} -->
+                    <a href="" class="btn btn-info btn-sm">Contact HR</a> <!-- {'contact_hr' %} -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

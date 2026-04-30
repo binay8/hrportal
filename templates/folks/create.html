@@ -1,0 +1,12 @@
+{% extends "folks/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-5">Add an employee</h2>
+    <form method="POST" action = "/create/">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "folks/base.html" %}
+{% load static %}
+
+{% block title %}View Leave Requests{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">View Leave Requests</h4>
+        </div>
+        <div class="card-body">
+            <p class="mb-4">
+                <strong>Name:</strong> {{ employee.firstname }} {{ employee.lastname }}
+            </p>
+
+            {% if leave_requests %}
+                <div class="accordion" id="leaveAccordion">
+                    {% for leave in leave_requests %}
+                        <div class="accordion-item mb-2 border rounded">
+                            <h2 class="accordion-header" id="heading{{ leave.id }}">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ leave.id }}"
+                                        aria-expanded="false"
+                                        aria-controls="collapse{{ leave.id }}">
+                                    <span class="me-3"><strong>ID:</strong> {{ leave.id }}</span>
+                                    <span class="me-3"><strong>Type:</strong> {{ leave.leave_type }}</span>
+                                    <span>
+                                        <strong>Status:</strong>
+                                        {% if leave.status == "Approved" %}
+                                            <span class="badge bg-success">{{ leave.status }}</span>
+                                        {% elif leave.status == "Rejected" %}
+                                            <span class="badge bg-danger">{{ leave.status }}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">{{ leave.status }}</span>
+                                        {% endif %}
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapse{{ leave.id }}" class="accordion-collapse collapse"
+                                 aria-labelledby="heading{{ leave.id }}"
+                                 data-bs-parent="#leaveAccordion">
+                                <div class="accordion-body">
+                                    <p class="mb-1"><strong>Start Date:</strong> {{ leave.start_date }}</p>
+                                    <p class="mb-1"><strong>End Date:</strong> {{ leave.end_date }}</p>
+                                    <p class="mb-0"><strong>Note:</strong> {{ leave.message|default:"-" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-light border mb-0">No leave requests found.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

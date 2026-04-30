@@ -1,0 +1,236 @@
+{% extends "folks/base.html" %}
+{% load static %}
+
+{% block title %}Request Leave{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --border: #dbe3ef;
+        --error-bg: #fef2f2;
+        --error-border: #fecaca;
+        --error-text: #b91c1c;
+        --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        --radius: 12px;
+    }
+
+    .leave-page {
+        max-width: 760px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .leave-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .leave-card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    }
+
+    .leave-card-header h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 1.35rem;
+    }
+
+    .employee-meta {
+        margin-top: 0.35rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+    }
+
+    .leave-card-body {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.92rem;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 0.95rem;
+        color: var(--text);
+        background: #fff;
+        box-sizing: border-box;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #93c5fd;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .error-summary {
+        margin-bottom: 1rem;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--error-border);
+        background: var(--error-bg);
+        color: var(--error-text);
+        border-radius: 10px;
+    }
+
+    .error-summary h4 {
+        margin: 0 0 0.35rem 0;
+        font-size: 0.95rem;
+    }
+
+    .error-summary ul {
+        margin: 0;
+        padding-left: 1.1rem;
+    }
+
+    .field-error {
+        color: var(--error-text);
+        font-size: 0.84rem;
+        margin-top: -0.15rem;
+    }
+
+    .actions {
+        margin-top: 1.25rem;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-submit {
+        border: none;
+        background: var(--primary);
+        color: #fff;
+        padding: 0.7rem 1.15rem;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-hover);
+    }
+
+    .btn-submit:active {
+        transform: translateY(1px);
+    }
+
+    @media (max-width: 700px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="leave-page">
+    <div class="leave-card">
+        <div class="leave-card-header">
+            <h2>Submit Leave Request</h2>
+            <div class="employee-meta">
+                Name: <strong>{{ employee.firstname }} {{ employee.lastname }}</strong>
+            </div>
+        </div>
+
+        <div class="leave-card-body">
+            <form method="post" action="{% url 'request_leave' %}" novalidate>
+                {% csrf_token %}
+
+                {% if leave_form.non_field_errors or leave_form.errors %}
+                    <div class="error-summary">
+                        <h4>Please fix the following:</h4>
+                        <ul>
+                            {% for error in leave_form.non_field_errors %}
+                                <li><strong>{{ error }}</strong></li>
+                            {% endfor %}
+                            {% for field, errors in leave_form.errors.items %}
+                                {% for error in errors %}
+                                    <li><strong>{{ error }}</strong></li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ leave_form.leave_type.label_tag }}
+                        {{ leave_form.leave_type }}
+                        {% for error in leave_form.leave_type.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ leave_form.start_date.label_tag }}
+                        {{ leave_form.start_date }}
+                        {% for error in leave_form.start_date.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ leave_form.end_date.label_tag }}
+                        {{ leave_form.end_date }}
+                        {% for error in leave_form.end_date.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group full">
+                        {{ leave_form.message.label_tag }}
+                        {{ leave_form.message }}
+                        {% for error in leave_form.message.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn-submit">Submit Leave Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

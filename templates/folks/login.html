@@ -1,0 +1,84 @@
+{% extends 'folks/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .login-container { 
+        max-width: 400px; 
+        margin: 40px auto; 
+        background: #fff; 
+        border-radius: 8px; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07); 
+        padding: 32px; 
+    }
+    .logo { 
+        display: block; 
+        margin: 0 auto 24px auto; 
+        width: 120px; 
+        height: auto;
+    }
+    .description { 
+        margin-bottom: 24px; 
+        color: #444; 
+        text-align: center; 
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .login-form { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 15px; 
+    }
+    .login-form input { 
+        padding: 12px; 
+        border: 1px solid #ddd; 
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .login-form button { 
+        padding: 12px; 
+        background: #0078d4; 
+        color: #fff; 
+        border: none; 
+        border-radius: 4px; 
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .login-form button:hover { 
+        background: #005fa3; 
+    }
+    .messages {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>
+
+<div class="login-container">
+    <img src="{% static 'folks/company_logo.png' %}" alt="Company Logo" class="logo">
+    <div class="description">
+        Welcome to the HR Portal. Here you can view your profile, manage leave requests, and access company resources. Please log in to continue.
+    </div>
+    
+    <!-- Display Django messages (errors, success, etc.) -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <form class="login-form" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</div>
+{% endblock %}
