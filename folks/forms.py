@@ -59,9 +59,9 @@ class RequestLeave(forms.ModelForm):
         end_date = cleaned_data.get("end_date")
         errors = []
 
-        if start_date < date.today():
+        if start_date and (start_date < date.today()):
             errors.append("Start date cannot be in the past.")
-        if start_date > end_date:
+        if (start_date and end_date) and (start_date > end_date):
             errors.append("Start date must be before end date.")
         if errors:
             raise forms.ValidationError(errors)
